@@ -38,6 +38,15 @@ function yesOrNo () {
         return false
     }
 }
+function normaliseHour (hour: number) {
+    if (hour > 23) {
+        return 0
+    } else if (hour < 0) {
+        return 23
+    } else {
+        return hour
+    }
+}
 input.onButtonPressed(Button.A, function () {
     if (!(disableControls)) {
         turnOn()
@@ -61,6 +70,7 @@ function changeHour (hour: number, name: string) {
             } else {
                 hour += -1
             }
+            hour = normaliseHour(hour)
         }
     }
     basic.clearScreen()
@@ -149,7 +159,7 @@ function upOrDown () {
 }
 function doConfig () {
     disableControls = true
-    basic.showString(timeanddate.time(timeanddate.TimeFormat.HMM))
+    basic.showString(timeanddate.time(timeanddate.TimeFormat.HHMM24hr))
     timeanddate.numericTime(function (hour, minute, second, month, day, year) {
         timeanddate.set24HourTime(changeHour(hour, "NOW"), 0, 0)
     })
