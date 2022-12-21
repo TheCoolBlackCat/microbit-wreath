@@ -47,11 +47,12 @@ function normaliseHour (hour: number) {
 input.onButtonPressed(Button.A, function () {
     if (!(disableControls)) {
         turnOn()
+        lightsDisabled = false
         manualOn = true
     }
 })
 function changeHour (hour: number, name: string) {
-    basic.showString("CHG " + name + "?")
+    basic.showString("SET " + name + "?")
     if (yesOrNo()) {
         helpShownCount = 0
         while (!(input.buttonIsPressed(Button.AB))) {
@@ -112,7 +113,7 @@ function upOrDownHelp () {
         `)
 }
 timeanddate.onMinuteChanged(function () {
-    if (!(disableControls)) {
+    if (!(lightsDisabled) && !(disableControls)) {
         timeanddate.numericTime(function (hour, minute, second, month, day, year) {
             if (hour >= onHour && hour < offHour) {
                 turnOn()
@@ -127,6 +128,7 @@ timeanddate.onMinuteChanged(function () {
 input.onButtonPressed(Button.B, function () {
     if (!(disableControls)) {
         turnOff()
+        lightsDisabled = true
         manualOn = false
     }
 })
@@ -168,8 +170,10 @@ let helpShownCount = 0
 let manualOn = false
 let offHour = 0
 let onHour = 0
+let lightsDisabled = false
 let disableControls = false
 disableControls = true
+lightsDisabled = false
 onHour = 16
 offHour = 22
 basic.showIcon(IconNames.SmallHeart)
