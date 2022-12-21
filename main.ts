@@ -32,11 +32,8 @@ function yesOrNo () {
     }
     if (input.buttonIsPressed(Button.A)) {
         return true
-    } else if (input.buttonIsPressed(Button.B)) {
-        return false
-    } else {
-        return false
     }
+    return false
 }
 function normaliseHour (hour: number) {
     if (hour > 23) {
@@ -151,11 +148,8 @@ function upOrDown () {
     }
     if (input.buttonIsPressed(Button.A)) {
         return true
-    } else if (input.buttonIsPressed(Button.B)) {
-        return false
-    } else {
-        return false
     }
+    return false
 }
 function doConfig () {
     disableControls = true
@@ -172,13 +166,15 @@ function doConfig () {
 let hour = 0
 let helpShownCount = 0
 let manualOn = false
-let disableControls = false
 let offHour = 0
 let onHour = 0
+let disableControls = false
+disableControls = true
 onHour = 16
 offHour = 22
 basic.showIcon(IconNames.SmallHeart)
 basic.showIcon(IconNames.Heart)
+disableControls = false
 basic.clearScreen()
 basic.forever(function () {
     if (!(disableControls) && input.buttonIsPressed(Button.AB)) {
