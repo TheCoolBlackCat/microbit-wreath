@@ -1,6 +1,12 @@
 function turnOn () {
     pins.digitalWritePin(DigitalPin.P2, 1)
-    basic.showIcon(IconNames.Happy)
+    basic.showLeds(`
+        # # . . .
+        . . . . .
+        . . . . .
+        . . . . .
+        . . . . .
+        `)
     basic.clearScreen()
 }
 function yesOrNo () {
@@ -40,19 +46,24 @@ function normaliseHour (hour: number) {
         return 0
     } else if (hour < 0) {
         return 23
-    } else {
-        return hour
     }
+    return hour
 }
 input.onButtonPressed(Button.A, function () {
     if (!(disableControls)) {
+        basic.showLeds(`
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . #
+            `)
         turnOn()
-        lightsDisabled = false
-        manualOn = true
+        autoModeDisabled = false
     }
 })
 function changeHour (hour: number, name: string) {
-    basic.showString("SET " + name + "?")
+    basic.showString("SET" + name + "?")
     if (yesOrNo()) {
         helpShownCount = 0
         while (!(input.buttonIsPressed(Button.AB))) {
@@ -69,9 +80,9 @@ function changeHour (hour: number, name: string) {
                 hour += -1
             }
             hour = normaliseHour(hour)
+            basic.clearScreen()
         }
     }
-    basic.clearScreen()
     basic.showIcon(IconNames.SmallHeart)
     return hour
 }
@@ -113,28 +124,37 @@ function upOrDownHelp () {
         `)
 }
 timeanddate.onMinuteChanged(function () {
-    if (!(lightsDisabled) && !(disableControls)) {
+    if (!(autoModeDisabled) && !(disableControls)) {
         timeanddate.numericTime(function (hour, minute, second, month, day, year) {
             if (hour >= onHour && hour < offHour) {
                 turnOn()
-            } else if (manualOn) {
-                turnOn()
-            } else {
-                turnOff()
             }
+            turnOff()
         })
     }
 })
 input.onButtonPressed(Button.B, function () {
     if (!(disableControls)) {
+        basic.showLeds(`
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . #
+            `)
         turnOff()
-        lightsDisabled = true
-        manualOn = false
+        autoModeDisabled = true
     }
 })
 function turnOff () {
     pins.digitalWritePin(DigitalPin.P2, 0)
-    basic.showIcon(IconNames.Sad)
+    basic.showLeds(`
+        # . . . .
+        . . . . .
+        . . . . .
+        . . . . .
+        . . . . .
+        `)
     basic.clearScreen()
 }
 function upOrDown () {
@@ -157,23 +177,22 @@ function doConfig () {
     disableControls = true
     basic.showString(timeanddate.time(timeanddate.TimeFormat.HHMM24hr))
     timeanddate.numericTime(function (hour, minute, second, month, day, year) {
-        timeanddate.set24HourTime(changeHour(hour, "NOW"), 0, 0)
+        timeanddate.set24HourTime(changeHour(hour, ""), 0, 0)
     })
-    onHour = changeHour(onHour, "ON")
-    offHour = changeHour(offHour, "OFF")
+    onHour = changeHour(onHour, " ON")
+    offHour = changeHour(offHour, " OFF")
     basic.showIcon(IconNames.Heart)
     disableControls = false
     basic.clearScreen()
 }
 let hour = 0
 let helpShownCount = 0
-let manualOn = false
 let offHour = 0
 let onHour = 0
-let lightsDisabled = false
+let autoModeDisabled = false
 let disableControls = false
 disableControls = true
-lightsDisabled = false
+autoModeDisabled = false
 onHour = 16
 offHour = 22
 basic.showIcon(IconNames.SmallHeart)
